@@ -1,1 +1,652 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PSG Tech Library Dashboard</title>
+  <meta name="description" content="Digital Library Dashboard of PSG College of Technology, Coimbatore">
+
+  <style>
+    :root {
+      --navy: #12345a;
+      --blue: #1769aa;
+      --sky: #eaf4ff;
+      --bg: #f4f7fb;
+      --text: #26364a;
+      --muted: #64748b;
+      --white: #ffffff;
+      --border: #e1e8f0;
+      --green: #168568;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    .topbar {
+      background: var(--navy);
+      color: white;
+      padding: 24px 5%;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: white;
+      color: var(--navy);
+      font-size: 29px;
+      flex-shrink: 0;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(20px, 3vw, 30px);
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: #d5e8ff;
+      font-size: 14px;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .nav a {
+      color: white;
+      text-decoration: none;
+      padding: 7px 12px;
+      border: 1px solid #476584;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .nav a:hover {
+      background: #254d76;
+    }
+
+    main {
+      width: min(1200px, 92%);
+      margin: 28px auto;
+    }
+
+    .welcome {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .welcome h2 {
+      margin: 0;
+      font-size: 25px;
+      color: var(--navy);
+    }
+
+    .welcome p {
+      margin: 6px 0 0;
+      color: var(--muted);
+    }
+
+    .date {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .notice {
+      background: #fff8e6;
+      border: 1px solid #f2d795;
+      border-radius: 10px;
+      padding: 12px 15px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #785315;
+    }
+
+    .section-title {
+      font-size: 19px;
+      color: var(--navy);
+      margin: 28px 0 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 3px 12px rgba(20, 50, 80, 0.04);
+      min-width: 0;
+    }
+
+    .stat-icon {
+      width: 43px;
+      height: 43px;
+      border-radius: 12px;
+      background: var(--sky);
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      margin-bottom: 13px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat-value {
+      font-size: clamp(23px, 2.5vw, 31px);
+      color: var(--navy);
+      font-weight: 700;
+      margin: 5px 0;
+    }
+
+    .stat-note {
+      color: var(--green);
+      font-size: 12px;
+    }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .panel-title {
+      margin: 0 0 5px;
+      color: var(--navy);
+      font-size: 18px;
+    }
+
+    .panel-subtitle {
+      margin: 0 0 22px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .bar-row {
+      margin: 17px 0;
+    }
+
+    .bar-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .bar-track {
+      background: #e8eef6;
+      border-radius: 20px;
+      height: 11px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 20px;
+      background: var(--blue);
+    }
+
+    .bar-fill.alt {
+      background: #36a4a0;
+    }
+
+    .bar-fill.gold {
+      background: #e9ac42;
+    }
+
+    .bar-fill.purple {
+      background: #8571d0;
+    }
+
+    .resource-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .resource {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--text);
+      transition: background 0.2s;
+    }
+
+    .resource:hover {
+      background: var(--sky);
+    }
+
+    .resource-icon {
+      font-size: 23px;
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      background: var(--sky);
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .resource strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .resource small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .search-area {
+      margin: 22px 0 14px;
+    }
+
+    .search-area input {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      background: white;
+      padding: 13px 15px;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    .search-area input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px #1769aa20;
+    }
+
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .quick-link {
+      display: block;
+      background: white;
+      padding: 17px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .quick-link:hover {
+      border-color: var(--blue);
+    }
+
+    .quick-link strong {
+      display: block;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .quick-link span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .empty {
+      display: none;
+      color: var(--muted);
+      padding: 15px 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px 15px;
+      margin-top: 35px;
+      background: var(--navy);
+      color: white;
+      font-size: 13px;
+    }
+
+    footer p {
+      margin: 5px;
+    }
+
+    @media (max-width: 850px) {
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .two-columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+
+      .card {
+        padding: 14px;
+      }
+
+      .quick-links {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        padding: 20px 4%;
+      }
+
+      main {
+        width: 94%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">📚</div>
+      <div>
+        <h1>PSG Tech Library</h1>
+        <p>Dr. GRD Memorial Library | PSG College of Technology</p>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#overview">Overview</a>
+      <a href="#collection">Collections</a>
+      <a href="#digital">Digital Resources</a>
+      <a href="#services">Library Services</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="welcome" id="overview">
+      <div>
+        <h2>Library Dashboard</h2>
+        <p>Your gateway to knowledge, research and digital learning.</p>
+      </div>
+      <div class="date" id="today"></div>
+    </section>
+
+    <div class="notice">
+      <strong>Demo dashboard:</strong> Figures shown here are starting values
+      for demonstration. Verify the current official statistics before
+      using this page for institutional reporting.
+    </div>
+
+    <h3 class="section-title">Library at a Glance</h3>
+
+    <section class="stats" aria-label="Library statistics">
+      <article class="card">
+        <div class="stat-icon" aria-hidden="true">📚</div>
+        <div class="stat-label">Book Collection</div>
+        <div class="stat-value">2.67 Lakh+</div>
+        <div class="stat-note">Verify current catalogue total</div>
+      </article>
+
+      <article class="card">
+        <div class="stat-icon" aria-hidden="true">🌐</div>
+        <div class="stat-label">E-Journals & Resources</div>
+        <div class="stat-value">9,000+</div>
+        <div class="stat-note">Verify current subscriptions</div>
+      </article>
+
+      <article class="card">
+        <div class="stat-icon" aria-hidden="true">🖥️</div>
+        <div class="stat-label">Digital Library Systems</div>
+        <div class="stat-value">60</div>
+        <div class="stat-note">Reported system capacity</div>
+      </article>
+
+      <article class="card">
+        <div class="stat-icon" aria-hidden="true">📖</div>
+        <div class="stat-label">Printed Journals</div>
+        <div class="stat-value">217</div>
+        <div class="stat-note">Verify current holdings</div>
+      </article>
+    </section>
+
+    <section class="two-columns" id="collection">
+      <article class="card">
+        <h3 class="panel-title">Library Collection</h3>
+        <p class="panel-subtitle">
+          Collection categories — reported counts for demonstration.
+        </p>
+
+        <div class="bar-row">
+          <div class="bar-heading">
+            <span>Lending Books</span><strong>171,660</strong>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:100%"></div>
+          </div>
+        </div>
+
+        <div class="bar-row">
+          <div class="bar-heading">
+            <span>Reference Books</span><strong>23,789</strong>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill alt" style="width:13.9%"></div>
+          </div>
+        </div>
+
+        <div class="bar-row">
+          <div class="bar-heading">
+            <span>Book Bank</span><strong>18,102</strong>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill gold" style="width:10.6%"></div>
+          </div>
+        </div>
+
+        <div class="bar-row">
+          <div class="bar-heading">
+            <span>Non-Book Materials</span><strong>13,053</strong>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill purple" style="width:7.6%"></div>
+          </div>
+        </div>
+
+        <div class="bar-row">
+          <div class="bar-heading">
+            <span>Department Library</span><strong>5,117</strong>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill alt" style="width:3%"></div>
+          </div>
+        </div>
+
+        <p class="panel-subtitle">
+          Bar lengths compare each category with lending books.
+          Other collection categories are not shown here.
+        </p>
+      </article>
+
+      <article class="card" id="digital">
+        <h3 class="panel-title">Digital Knowledge Resources</h3>
+        <p class="panel-subtitle">
+          Explore useful academic and research platforms.
+        </p>
+
+        <div class="resource-list">
+          <a class="resource" href="https://ndl.iitkgp.ac.in/"
+             target="_blank" rel="noopener noreferrer">
+            <span class="resource-icon">🎓</span>
+            <span>
+              <strong>National Digital Library of India</strong>
+              <small>Learning materials and academic resources</small>
+            </span>
+          </a>
+
+          <a class="resource" href="https://scholar.google.com/"
+             target="_blank" rel="noopener noreferrer">
+            <span class="resource-icon">🔎</span>
+            <span>
+              <strong>Google Scholar</strong>
+              <small>Search scholarly literature</small>
+            </span>
+          </a>
+
+          <a class="resource" href="https://www.scopus.com/"
+             target="_blank" rel="noopener noreferrer">
+            <span class="resource-icon">📊</span>
+            <span>
+              <strong>Scopus</strong>
+              <small>Abstracts, citations and research discovery</small>
+            </span>
+          </a>
+
+          <a class="resource" href="https://swayam.gov.in/"
+             target="_blank" rel="noopener noreferrer">
+            <span class="resource-icon">💡</span>
+            <span>
+              <strong>SWAYAM</strong>
+              <small>Online courses and learning opportunities</small>
+            </span>
+          </a>
+
+          <a class="resource" href="https://epgp.inflibnet.ac.in/"
+             target="_blank" rel="noopener noreferrer">
+            <span class="resource-icon">📘</span>
+            <span>
+              <strong>e-PG Pathshala</strong>
+              <small>Postgraduate e-learning content</small>
+            </span>
+          </a>
+        </div>
+      </article>
+    </section>
+
+    <section id="services">
+      <h3 class="section-title">Explore Library Services</h3>
+
+      <div class="search-area">
+        <input
+          type="search"
+          id="dashboardSearch"
+          placeholder="Search dashboard sections, resources or services..."
+          aria-label="Search dashboard"
+        >
+      </div>
+
+      <div class="quick-links" id="quickLinks">
+        <a class="quick-link" href="#collection" data-search="books collection lending reference">
+          <strong>📚 Book Collection</strong>
+          <span>Explore collection statistics</span>
+        </a>
+
+        <a class="quick-link" href="#digital" data-search="digital journals databases online">
+          <strong>🌐 E-Resources</strong>
+          <span>Discover online academic resources</span>
+        </a>
+
+        <a class="quick-link" href="https://scholar.google.com/" target="_blank" rel="noopener noreferrer" data-search="research scholar citations">
+          <strong>🔬 Research Support</strong>
+          <span>Discover scholarly literature</span>
+        </a>
+
+        <a class="quick-link" href="https://ndl.iitkgp.ac.in/" target="_blank" rel="noopener noreferrer" data-search="ndli learning study materials">
+          <strong>🎓 Learning Resources</strong>
+          <span>Find educational materials</span>
+        </a>
+
+        <a class="quick-link" href="https://swayam.gov.in/" target="_blank" rel="noopener noreferrer" data-search="online courses swayam mooc">
+          <strong>💻 Online Learning</strong>
+          <span>Explore courses and MOOCs</span>
+        </a>
+
+        <a class="quick-link" href="#overview" data-search="library overview dashboard home">
+          <strong>🏛️ Library Overview</strong>
+          <span>Return to dashboard statistics</span>
+        </a>
+      </div>
+
+      <p class="empty" id="emptyMessage">No matching sections found.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>Dr. GRD Memorial Library</strong></p>
+    <p>PSG College of Technology | Coimbatore – 641 004 | Tamil Nadu, India</p>
+    <p>Library dashboard demonstration | Figures require verification</p>
+  </footer>
+
+  <script>
+    // Display today's date automatically.
+    document.getElementById("today").textContent =
+      new Intl.DateTimeFormat("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      }).format(new Date());
+
+    // Search the quick-link cards as the user types.
+    const searchInput = document.getElementById("dashboardSearch");
+    const links = Array.from(
+      document.querySelectorAll("#quickLinks .quick-link")
+    );
+    const emptyMessage = document.getElementById("emptyMessage");
+
+    searchInput.addEventListener("input", function () {
+      const query = this.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      links.forEach(function (link) {
+        const searchableText =
+          (link.innerText + " " + link.dataset.search).toLowerCase();
+
+        const matches = searchableText.includes(query);
+        link.style.display = matches ? "block" : "none";
+
+        if (matches) visibleCount++;
+      });
+
+      emptyMessage.style.display =
+        visibleCount === 0 ? "block" : "none";
+    });
+  </script>
+</body>
+</html>
+
