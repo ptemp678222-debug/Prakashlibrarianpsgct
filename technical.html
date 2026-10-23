@@ -1,1 +1,282 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical Section Dashboard | PSG Tech Library</title>
+<style>
+:root{--navy:#12345a;--blue:#1769aa;--bg:#f3f6fb;--ink:#26364a;--muted:#64748b;--line:#e1e8f0;--green:#168568}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px Arial, sans-serif}
+header{background:linear-gradient(120deg,#12345a,#1769aa);color:white;padding:25px 5%}
+header h1{margin:0;font-size:clamp(22px,4vw,32px)}
+header p{color:#d9eaff;margin:8px 0 0}
+nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+nav a{color:white;text-decoration:none;border:1px solid #ffffff55;padding:8px 12px;border-radius:8px;font-size:13px}
+main{max-width:1200px;width:94%;margin:25px auto}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+h2{color:var(--navy);font-size:22px;margin:0 0 7px}
+h3{color:var(--navy);font-size:18px;margin:0 0 7px}
+.muted{color:var(--muted);font-size:13px}
+.notice{margin:18px 0;background:#fff7df;color:#765016;border:1px solid #f0d58d;border-radius:10px;padding:13px;font-size:13px;line-height:1.6}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+select,input{background:white;border:1px solid #ccd7e4;border-radius:8px;padding:11px;font:inherit;max-width:100%}
+.filters select{min-width:170px}
+button{cursor:pointer;border:0;background:var(--blue);color:white;padding:11px 15px;border-radius:8px;font-weight:bold}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}
+.card,.panel{background:white;border:1px solid var(--line);border-radius:13px;padding:19px;box-shadow:0 3px 12px #15345408;min-width:0}
+.icon{font-size:25px;margin-bottom:12px}
+.value{font-size:clamp(24px,3vw,32px);font-weight:bold;color:var(--navy);margin:8px 0}
+.panel-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin:16px 0}
+.panel{margin-bottom:0}
+.panel .muted{margin-bottom:20px;line-height:1.5}
+.stage{margin:17px 0}
+.stage-head{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:7px}
+.track{height:11px;border-radius:20px;background:#e9eff6;overflow:hidden}
+.fill{height:100%;background:var(--blue);border-radius:20px;transition:width .3s}
+.fill.green{background:#20a181}
+.fill.gold{background:#dfa43c}
+.fill.purple{background:#8571d0}
+.year-bars{display:flex;align-items:flex-end;gap:25px;height:190px;border-bottom:1px solid var(--line);padding:10px 15px 0}
+.year-col{flex:1;text-align:center;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:7px}
+.year-bar{width:min(75px,70%);background:linear-gradient(#3d9be0,#1769aa);border-radius:7px 7px 0 0;min-height:3px}
+.year-col strong{font-size:13px}
+.year-col small{color:var(--muted);font-size:12px}
+.search{width:100%;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--navy);background:#f5f8fc}
+.table-wrap{overflow-x:auto}
+.tag{display:inline-block;background:#eaf4ff;color:#14558b;padding:5px 8px;border-radius:6px;font-size:12px}
+footer{text-align:center;background:var(--navy);color:white;padding:22px 12px;margin-top:30px;font-size:13px}
+@media(max-width:800px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.panel-grid{grid-template-columns:1fr}}
+@media(max-width:460px){.cards{gap:8px}.card,.panel{padding:13px}.value{font-size:23px}th,td{padding:8px 5px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>📚 Technical Section Dashboard</h1>
+  <p>Dr. GRD Memorial Library | PSG College of Technology, Coimbatore</p>
+  <nav>
+    <a href="#overview">Overview</a>
+    <a href="#annual">Annual Analysis</a>
+    <a href="#processing">Book Processing</a>
+    <a href="#registers">Register Summary</a>
+  </nav>
+</header>
+
+<main>
+<section id="overview">
+  <div class="row">
+    <div>
+      <h2>Technical Processing Overview</h2>
+      <div class="muted">Purchase records, physical processing, verification and stack transfer</div>
+    </div>
+    <div class="muted" id="today"></div>
+  </div>
+
+  <div class="notice">
+    <strong>Data validation notice:</strong> Figures are derived from the supplied workbook.
+    Accession-entry counts are not guaranteed to equal unique books received.
+    The processing register includes rows that may have blank or incomplete stages.
+    Verify totals against the original registers before official reporting.
+  </div>
+
+  <div class="filters">
+    <label>
+      <span class="muted">Select reporting year</span><br>
+      <select id="year">
+        <option value="all">All available years</option>
+        <option value="2022">2022–2023</option>
+        <option value="2023">2023–2024</option>
+      </select>
+    </label>
+    <label>
+      <span class="muted">Search processing stages</span><br>
+      <input id="stageSearch" placeholder="e.g. barcode, verification">
+    </label>
+    <button id="reset">Reset filters</button>
+  </div>
+
+  <div class="cards">
+    <article class="card">
+      <div class="icon">📥</div>
+      <div class="muted">Accession entries</div>
+      <div class="value" id="totalEntries">4,353</div>
+      <div class="muted">Across the two purchase indexes</div>
+    </article>
+    <article class="card">
+      <div class="icon">🛠️</div>
+      <div class="muted">Processing register rows</div>
+      <div class="value" id="progressRows">1,755</div>
+      <div class="muted">2022–2023 daily work-progress sheet</div>
+    </article>
+    <article class="card">
+      <div class="icon">🔍</div>
+      <div class="muted">Under verification</div>
+      <div class="value" id="verification">302</div>
+      <div class="muted">Rows in stock-room verification register</div>
+    </article>
+    <article class="card">
+      <div class="icon">📦</div>
+      <div class="muted">Under process</div>
+      <div class="value" id="underProcess">26</div>
+      <div class="muted">Rows in stock-room under-process register</div>
+    </article>
+  </div>
+</section>
+
+<section id="annual" class="panel">
+  <h3>Annual Purchase Index Comparison</h3>
+  <p class="muted">Number of numeric accession entries in each purchase index sheet. Select a year above to highlight the selected period.</p>
+  <div class="year-bars" id="yearChart" aria-label="Annual accession entries comparison"></div>
+  <p class="muted" id="yearSummary"></p>
+</section>
+
+<section id="processing" class="panel" style="margin-top:16px">
+  <h3>Physical and Technical Processing</h3>
+  <p class="muted">Counts marked “Done” in the 2022–2023 Daily Work Progress register. These are stage-level counts; a book may be complete at one stage and pending at another.</p>
+  <div id="stages"></div>
+  <p class="muted">Stage completion percentage = records marked Done ÷ total register rows × 100. This does not mean the same percentage of books has completed every stage.</p>
+</section>
+
+<section id="registers" class="panel" style="margin-top:16px">
+  <h3>Stock Room and Transfer Registers</h3>
+  <p class="muted">Number of data rows in selected workbook registers. These categories may overlap and should not be added together as a total book count.</p>
+  <input class="search" id="registerSearch" placeholder="Search register names...">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Register</th><th>Rows recorded</th><th>Interpretation</th></tr></thead>
+      <tbody id="registerTable"></tbody>
+    </table>
+  </div>
+</section>
+</main>
+
+<footer>
+  <strong>Dr. GRD Memorial Library</strong>
+  <p>PSG College of Technology | Coimbatore – 641 004 | Tamil Nadu, India</p>
+  <p>Technical Section dashboard | Workbook-based demonstration</p>
+</footer>
+
+<script>
+const annual = [
+  {year:"2022–2023", key:"2022", count:2229, sheet:"Purchase Details_Index 2022–2023"},
+  {year:"2023–2024", key:"2023", count:2124, sheet:"Purchase Details_Index 2023–2024"}
+];
+
+const stages = [
+  {name:"Copyright Page Sealing",done:1316},
+  {name:"Barcode Pasting",done:1198},
+  {name:"Barcode Taping",done:1210},
+  {name:"Sensarmatic",done:1198},
+  {name:"Packet",done:352},
+  {name:"Round Sealing",done:1004},
+  {name:"Call Number Writing",done:1190},
+  {name:"Overhead Writing",done:1210},
+  {name:"Spine Labelling",done:856},
+  {name:"Spine Pasting",done:856},
+  {name:"Spine Taping",done:887},
+  {name:"Due Slip Pasting",done:352},
+  {name:"Due Slip Printing",done:990},
+  {name:"Call Number Assigning",done:1210},
+  {name:"Data Entry",done:1102},
+  {name:"Final Verification",done:1108},
+  {name:"Register Printing",done:1755},
+  {name:"Voucher Work",done:1755},
+  {name:"Transfer to Department",done:24}
+];
+
+const registers = [
+  {name:"Under-verification books",count:302,note:"Rows in the stock-room verification register"},
+  {name:"Tracing books",count:6,note:"Rows in the tracing register"},
+  {name:"Under-process books",count:26,note:"Rows in the under-process register"},
+  {name:"Books to be condemned",count:25,note:"Rows in the condemnation register"},
+  {name:"Transfer to departments",count:66,note:"Rows in the department-transfer register"},
+  {name:"Transferred to PTC (2026)",count:20,note:"Rows in the 2026 transfer register"},
+  {name:"Library bindery books",count:295,note:"Rows in the bindery register"}
+];
+
+const fmt = n => n.toLocaleString("en-IN");
+const yearSelect = document.getElementById("year");
+
+function renderYears(){
+  const selected = yearSelect.value;
+  const data = selected === "all" ? annual : annual.filter(d => d.key === selected);
+  const max = Math.max(...data.map(d => d.count),1);
+  const chart = document.getElementById("yearChart");
+  chart.innerHTML = "";
+
+  data.forEach(d => {
+    const col = document.createElement("div");
+    col.className = "year-col";
+    col.innerHTML = `<strong>${fmt(d.count)}</strong>
+      <div class="year-bar" style="height:${Math.max(3,d.count/max*125)}px"></div>
+      <small>${d.year}</small>`;
+    chart.appendChild(col);
+  });
+
+  const total = data.reduce((sum,d)=>sum+d.count,0);
+  document.getElementById("yearSummary").textContent =
+    `Displayed accession entries: ${fmt(total)}. This is a count of numeric accession entries, not a verified unique-book total.`;
+}
+
+function renderStages(){
+  const q = document.getElementById("stageSearch").value.toLowerCase().trim();
+  const container = document.getElementById("stages");
+  container.innerHTML = "";
+
+  stages.filter(s=>s.name.toLowerCase().includes(q)).forEach(s=>{
+    const pct = Math.round(s.done/1755*100);
+    const row = document.createElement("div");
+    row.className = "stage";
+    row.innerHTML = `<div class="stage-head"><span>${s.name}</span><strong>${fmt(s.done)} / 1,755 (${pct}%)</strong></div>
+      <div class="track"><div class="fill ${pct>=75?"green":pct>=45?"gold":"purple"}" style="width:${pct}%"></div></div>`;
+    container.appendChild(row);
+  });
+
+  if(!container.children.length){
+    container.textContent = "No processing stages match your search.";
+  }
+}
+
+function renderRegisters(){
+  const q = document.getElementById("registerSearch").value.toLowerCase().trim();
+  const tbody = document.getElementById("registerTable");
+  tbody.innerHTML = "";
+  registers.filter(r=>(r.name+" "+r.note).toLowerCase().includes(q)).forEach(r=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${r.name}</td><td><strong>${fmt(r.count)}</strong></td><td>${r.note}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function update(){
+  const selected = yearSelect.value;
+  const data = selected==="all" ? annual : annual.filter(d=>d.key===selected);
+  document.getElementById("totalEntries").textContent = fmt(data.reduce((s,d)=>s+d.count,0));
+  document.getElementById("progressRows").textContent = selected==="2023" ? "—" : "1,755";
+  renderYears();
+}
+
+document.getElementById("today").textContent =
+  new Intl.DateTimeFormat("en-IN",{day:"numeric",month:"short",year:"numeric"}).format(new Date());
+
+yearSelect.addEventListener("change",update);
+document.getElementById("stageSearch").addEventListener("input",renderStages);
+document.getElementById("registerSearch").addEventListener("input",renderRegisters);
+document.getElementById("reset").addEventListener("click",()=>{
+  yearSelect.value="all";
+  document.getElementById("stageSearch").value="";
+  document.getElementById("registerSearch").value="";
+  update();renderStages();renderRegisters();
+});
+
+update();
+renderStages();
+renderRegisters();
+</script>
+</body>
+</html>
+
